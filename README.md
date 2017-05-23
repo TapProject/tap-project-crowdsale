@@ -1,4 +1,4 @@
-#An Ethereum Blockchain based transferable in-game currency. #
+#An Ethereum Blockchain based transferable in-game currency. 
 
 ## What we see: ##
 
