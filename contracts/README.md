@@ -1,1 +1,1 @@
-contract information
+contract information - [completed for now]
