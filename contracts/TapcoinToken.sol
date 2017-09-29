@@ -7,7 +7,7 @@ pragma solidity ^0.4.11;
 import "./CrowdsaleToken.sol";
 
 contract TapcoinToken is CrowdsaleToken {
-  function TapcoinToken(string _name, string _symbol, uint _initialSupply, uint _decimals)
-   CrowdsaleToken(_name, _symbol, _initialSupply, _decimals) {
+  function TapcoinToken(string _name, string _symbol, uint _initialSupply, uint _decimals, bool _mintable)
+   CrowdsaleToken(_name, _symbol, _initialSupply, _decimals, _mintable) {
   }
 }

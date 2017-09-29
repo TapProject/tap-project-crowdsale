@@ -4,7 +4,7 @@ import "./Ownable.sol";
 import "./ERC20.sol";
 
 
-/**
+/*
  * Define interface for releasing the token transfer after a successful crowdsale.
  */
 contract ReleasableToken is ERC20, Ownable {
@@ -12,13 +12,13 @@ contract ReleasableToken is ERC20, Ownable {
   /* The finalizer contract that allows unlift the transfer limits on this token */
   address public releaseAgent;
 
-  /** A crowdsale contract can release us to the wild if ICO success. If false we are are in transfer lock up period.*/
+  /* A crowdsale contract can release us to the wild if ICO success. If false we are are in transfer lock up period.*/
   bool public released = false;
 
-  /** Map of agents that are allowed to transfer tokens regardless of the lock down period. These are crowdsale contracts and possible the team multisig itself. */
+  /* Map of agents that are allowed to transfer tokens regardless of the lock down period. These are crowdsale contracts and possible the team multisig itself. */
   mapping (address => bool) public transferAgents;
 
-  /**
+  /*
    * Limit token transfer until the crowdsale is over.
    *
    */
@@ -33,7 +33,7 @@ contract ReleasableToken is ERC20, Ownable {
     _;
   }
 
-  /**
+  /*
    * Set the contract that can call release and make the token transferable.
    *
    * Design choice. Allow reset the release agent to fix fat finger mistakes.
@@ -44,14 +44,14 @@ contract ReleasableToken is ERC20, Ownable {
     releaseAgent = addr;
   }
 
-  /**
+  /*
    * Owner can allow a particular address (a crowdsale contract) to transfer tokens despite the lock up period.
    */
   function setTransferAgent(address addr, bool state) onlyOwner inReleaseState(false) public {
     transferAgents[addr] = state;
   }
 
-  /**
+  /*
    * One way function to release the tokens to the wild.
    *
    * Can be called only from the release agent that is the final ICO contract. It is only called if the crowdsale has been success (first milestone reached).
@@ -60,7 +60,7 @@ contract ReleasableToken is ERC20, Ownable {
     released = true;
   }
 
-  /** The function can be called only before or after the tokens have been releasesd */
+  /* The function can be called only before or after the tokens have been releasesd */
   modifier inReleaseState(bool releaseState) {
     if(releaseState != released) {
         throw;
@@ -68,7 +68,7 @@ contract ReleasableToken is ERC20, Ownable {
     _;
   }
 
-  /** The function can be called only by a whitelisted release agent. */
+  /* The function can be called only by a whitelisted release agent. */
   modifier onlyReleaseAgent() {
     if(msg.sender != releaseAgent) {
         throw;

@@ -4,23 +4,23 @@ import "./ERC20.sol";
 import "./StandardToken.sol";
 import "./UpgradeAgent.sol";
 
-/**
+/*
  * A token upgrade mechanism where users can opt-in amount of tokens to the next smart contract revision.
  *
  * First envisioned by Golem and Lunyr projects.
  */
 contract UpgradeableToken is StandardToken {
 
-  /** Contract / person who can set the upgrade path. This can be the same as team multisig wallet, as what it is with its default value. */
+  /* Contract  person who can set the upgrade path. This can be the same as team multisig wallet, as what it is with its default value. */
   address public upgradeMaster;
 
-  /** The next contract where the tokens will be migrated. */
+  /* The next contract where the tokens will be migrated. */
   UpgradeAgent public upgradeAgent;
 
-  /** How many tokens we have upgraded by now. */
+  /* How many tokens we have upgraded by now. */
   uint256 public totalUpgraded;
 
-  /**
+  /*
    * Upgrade states.
    *
    * - NotAllowed: The child contract has not reached a condition where the upgrade can bgun
@@ -31,24 +31,24 @@ contract UpgradeableToken is StandardToken {
    */
   enum UpgradeState {Unknown, NotAllowed, WaitingForAgent, ReadyToUpgrade, Upgrading}
 
-  /**
+  /*
    * Somebody has upgraded some of his tokens.
    */
   event Upgrade(address indexed _from, address indexed _to, uint256 _value);
 
-  /**
+  /*
    * New upgrade agent available.
    */
   event UpgradeAgentSet(address agent);
 
-  /**
+  /*
    * Do not allow construction without upgrade master set.
    */
   function UpgradeableToken(address _upgradeMaster) {
     upgradeMaster = _upgradeMaster;
   }
 
-  /**
+  /*
    * Allow the token holder to upgrade some of their tokens to a new contract.
    */
   function upgrade(uint256 value) public {
@@ -73,7 +73,7 @@ contract UpgradeableToken is StandardToken {
       Upgrade(msg.sender, upgradeAgent, value);
   }
 
-  /**
+  /*
    * Set an upgrade agent that handles
    */
   function setUpgradeAgent(address agent) external {
@@ -99,7 +99,7 @@ contract UpgradeableToken is StandardToken {
       UpgradeAgentSet(upgradeAgent);
   }
 
-  /**
+  /*
    * Get the state of the token upgrade.
    */
   function getUpgradeState() public constant returns(UpgradeState) {
@@ -109,7 +109,7 @@ contract UpgradeableToken is StandardToken {
     else return UpgradeState.Upgrading;
   }
 
-  /**
+  /*
    * Change the upgrade master.
    *
    * This allows us to set a new owner for the upgrade mechanism.
@@ -120,7 +120,7 @@ contract UpgradeableToken is StandardToken {
       upgradeMaster = master;
   }
 
-  /**
+  /*
    * Child contract can enable to provide the condition when the upgrade can begun.
    */
   function canUpgrade() public constant returns(bool) {

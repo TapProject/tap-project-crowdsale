@@ -1,16 +1,16 @@
 pragma solidity ^0.4.11;
 
-/**
+/*
  * Interface for defining crowdsale pricing.
  */
 contract PricingStrategy {
 
-  /** Interface declaration. */
+  /* Interface declaration. */
   function isPricingStrategy() public constant returns (bool) {
     return true;
   }
 
-  /** Self check if all references are correctly set.
+  /* Self check if all references are correctly set.
    *
    * Checks that pricing strategy matches crowdsale parameters.
    */
@@ -18,7 +18,11 @@ contract PricingStrategy {
     return true;
   }
 
-  /**
+  function isPresalePurchase(address purchaser) public constant returns (bool) {
+    return false;
+  }
+
+  /*
    * When somebody tries to buy tokens for X eth, calculate how many tokens they get.
    *
    *

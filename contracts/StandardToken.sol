@@ -29,23 +29,8 @@ contract StandardToken is ERC20 {
     return true;
   }
 
-  /**
-   *
-   * Fix for the ERC20 short address attack
-   *
-   * http://vessenes.com/the-erc20-short-address-attack-explained/
-   */
-  modifier onlyPayloadSize(uint size) {
-     if(msg.data.length < size + 4) {
-       throw;
-     }
-     _;
-  }
-
-  function transfer(address _to, uint _value) onlyPayloadSize(2 * 32) returns (bool success) {
-    // balances[msg.sender] = safeSub(balances[msg.sender], _value); old
+  function transfer(address _to, uint _value) returns (bool success) {
     balances[msg.sender] = balances[msg.sender].sub(_value);
-    // balances[_to] = safeAdd(balances[_to], _value); old
     balances[_to] = balances[_to].add(_value);
     Transfer(msg.sender, _to, _value);
     return true;
@@ -53,9 +38,6 @@ contract StandardToken is ERC20 {
 
   function transferFrom(address _from, address _to, uint _value) returns (bool success) {
     uint _allowance = allowed[_from][msg.sender];
-
-    // Check is not needed because safeSub(_allowance, _value) will already throw if this condition is not met
-    // if (_value > _allowance) throw;
 
     balances[_to] = balances[_to].add(_value);
     balances[_from] = balances[_from].sub(_value);
@@ -85,37 +67,23 @@ contract StandardToken is ERC20 {
     return allowed[_owner][_spender];
   }
 
-  /**
-   * Atomic increment of approved spending
-   *
-   * Works around https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
-   *
-   */
-  function addApproval(address _spender, uint _addedValue)
-  returns (bool success) {
-      uint oldValue = allowed[msg.sender][_spender];
-      allowed[msg.sender][_spender] = oldValue.add(_addedValue);
-      Approval(msg.sender, _spender, allowed[msg.sender][_spender]);
-      return true;
+  function increaseApproval (address _spender, uint _addedValue)
+    returns (bool success) {
+    allowed[msg.sender][_spender] = allowed[msg.sender][_spender].add(_addedValue);
+    Approval(msg.sender, _spender, allowed[msg.sender][_spender]);
+    return true;
   }
 
-  /**
-   * Atomic decrement of approved spending.
-   *
-   * Works around https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
-   */
-  function subApproval(address _spender, uint _subtractedValue)
-  returns (bool success) {
-
-      uint oldVal = allowed[msg.sender][_spender];
-
-      if (_subtractedValue > oldVal) {
-          allowed[msg.sender][_spender] = 0;
-      } else {
-          allowed[msg.sender][_spender] = oldVal.sub(_subtractedValue);
-      }
-      Approval(msg.sender, _spender, allowed[msg.sender][_spender]);
-      return true;
+  function decreaseApproval (address _spender, uint _subtractedValue)
+    returns (bool success) {
+    uint oldValue = allowed[msg.sender][_spender];
+    if (_subtractedValue > oldValue) {
+      allowed[msg.sender][_spender] = 0;
+    } else {
+      allowed[msg.sender][_spender] = oldValue.sub(_subtractedValue);
+    }
+    Approval(msg.sender, _spender, allowed[msg.sender][_spender]);
+    return true;
   }
 
 }

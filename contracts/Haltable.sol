@@ -19,6 +19,11 @@ contract Haltable is Ownable {
     _;
   }
 
+  modifier stopNonOwnersInEmergency {
+    if (halted && msg.sender != owner) throw;
+    _;
+  }
+
   modifier onlyInEmergency {
     if (!halted) throw;
     _;
